@@ -12,7 +12,7 @@ class Factory
      *
      * @var \ArrayAccess
      */
-    protected $storage;
+    private $storage;
 
     /**
      * Factory constructor.
@@ -52,7 +52,7 @@ class Factory
                 default:
                     $currentMetadata = TargetsMetadata::createFromJson($json);
             }
-            $currentMetadata->setIsTrusted(true);
+            $currentMetadata->trust();
             return $currentMetadata;
         } else {
             return null;
