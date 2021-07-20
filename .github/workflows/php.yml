@@ -57,6 +57,12 @@ jobs:
         else
             exit 0
         fi
+    - name: Store fixtures as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: fixtures
+        path: fixtures/
+        retention-days: 5
 
   coverage:
     name: 'Code coverage'
@@ -80,6 +86,7 @@ jobs:
 
   build:
     name: PHP ${{ matrix.php }} test on ${{ matrix.operating-system }} with ${{ matrix.dependencies }}
+    needs: fixtures
     runs-on: ${{ matrix.operating-system }}
     strategy:
       fail-fast: false
@@ -136,11 +143,18 @@ jobs:
       - name: Run PHPCS
         run: composer phpcs
 
+      - name: Download fixtures
+        uses: actions/download-artifact@v2
+        with:
+          name: fixtures
+          path: fixtures
+
       - name: Run test suite
         run: composer test
 
   build-lowest-version:
     name: Build lowest version
+    needs: fixtures
     runs-on: ubuntu-latest
 
     steps:
@@ -161,6 +175,12 @@ jobs:
 
       - name: Download dependencies
         run: 'composer update ${{ env.COMPOSER_FLAGS }} --prefer-lowest'
+
+      - name: Download fixtures
+        uses: actions/download-artifact@v2
+        with:
+          name: fixtures
+          path: fixtures
 
       - name: Run test suite
         run: composer test
