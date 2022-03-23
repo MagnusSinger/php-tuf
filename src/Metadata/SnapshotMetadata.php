@@ -28,7 +28,7 @@ class SnapshotMetadata extends FileInfoMetadataBase
             new All([
                 new Collection(
                     [
-                        'fields' => static::getVersionConstraints(),
+                        'fields' => static::getSnapshotMetaConstraints(),
                         'allowExtraFields' => true,
                     ]
                 ),
@@ -36,4 +36,31 @@ class SnapshotMetadata extends FileInfoMetadataBase
         ]);
         return $options;
     }
+    
+    /**
+	 * Returns the fields required or optional for a snapshot meta file
+	 *
+	 * @return array
+	 */
+	private static function getSnapshotMetaConstraints()
+	{
+		return [
+			'version' => [
+				new Type(['type' => 'integer']),
+				new GreaterThanOrEqual(1),
+			],
+			new Optional(
+				[
+				new Collection(
+					[
+					'length' => [
+						new Type(['type' => 'integer']),
+						new GreaterThanOrEqual(1),
+					],
+					] + static::getHashesConstraints()
+				),
+				]
+			),
+		];
+	}
 }
