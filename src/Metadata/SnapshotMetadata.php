@@ -4,6 +4,8 @@ namespace Tuf\Metadata;
 
 use Symfony\Component\Validator\Constraints\All;
 use Symfony\Component\Validator\Constraints\Count;
+use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
+use Symfony\Component\Validator\Constraints\Optional;
 use Symfony\Component\Validator\Constraints\Required;
 use Symfony\Component\Validator\Constraints\Type;
 use Tuf\Constraints\Collection;
@@ -36,31 +38,31 @@ class SnapshotMetadata extends FileInfoMetadataBase
         ]);
         return $options;
     }
-    
+
     /**
-	 * Returns the fields required or optional for a snapshot meta file
-	 *
-	 * @return array
-	 */
-	private static function getSnapshotMetaConstraints()
-	{
-		return [
-			'version' => [
-				new Type(['type' => 'integer']),
-				new GreaterThanOrEqual(1),
-			],
-			new Optional(
-				[
-				new Collection(
-					[
-					'length' => [
-						new Type(['type' => 'integer']),
-						new GreaterThanOrEqual(1),
-					],
-					] + static::getHashesConstraints()
-				),
-				]
-			),
-		];
-	}
+     * Returns the fields required or optional for a snapshot meta file
+     *
+     * @return array
+     */
+    private static function getSnapshotMetaConstraints()
+    {
+        return [
+            'version' => [
+                new Type(['type' => 'integer']),
+                new GreaterThanOrEqual(1),
+            ],
+            new Optional(
+                [
+                new Collection(
+                    [
+                    'length' => [
+                        new Type(['type' => 'integer']),
+                        new GreaterThanOrEqual(1),
+                    ],
+                    ] + static::getHashesConstraints()
+                ),
+                ]
+            ),
+        ];
+    }
 }
